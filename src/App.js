@@ -1,6 +1,16 @@
 import { useState } from "react";
 import "./App.css";
 
+const initialData = {
+  name: '',
+  address: '',
+  phone: '',
+  email: '',
+  complaint: '',
+  contact: '',
+  consent: false,
+}
+
 export default function App() {
   
   //TODO: Add your state fields here
@@ -13,22 +23,24 @@ export default function App() {
   const [contactType, setContactType] = useState(null)
   const [consent, setConsent] = useState(false)
 
+  // Or create one object to hold all the values
+  const [formData, setFormData] = useState(initialData)
+
+  const handleChange = (e) => {
+    const { name, type, value, checked } = e.target;
+    if (type === 'checkbox')
+      setFormData({...formData, [name]: checked })
+    else
+      setFormData(Object.assign({}, formData, { [name]: value }))
+
+    // Object.assign({}, obj, obj2, ...) === {...obj1, ...obj2, ...}
+  }
 
   return (
     <>
       <form className="form" onSubmit={(e) => {
             e.preventDefault()
-            console.log(
-              {
-                fullName, 
-                address,
-                phone,
-                email,
-                complaint,
-                contactType,
-                consent
-              }
-            )
+            console.log(formData)
           }}
       >
         <h2>Complaining form!</h2>
@@ -36,26 +48,26 @@ export default function App() {
           <label>
             Full name
             <input type="text" name="name" required 
-              onChange={e => { setFullName(e.target.value) }} 
+              onChange={e => { handleChange(e) }} 
             />
           </label>
           <label>
             Address
             <input type="text" name="address" 
-              onChange={e => { setAddress(e.target.value) }} 
+              onChange={e => { handleChange(e) }} 
             />
           </label>
           <label>
             Phone Number
             <input type="tel" name="phone"
-              onChange={e => { setPhone(e.target.value) }} 
+              onChange={e => { handleChange(e) }} 
             />
           </label>
 
           <label>
             Email
             <input type="email" name="email"
-              onChange={e => { setEmail(e.target.value) }} 
+              onChange={e => { handleChange(e) }} 
             />
           </label>
         </div>
@@ -67,12 +79,12 @@ export default function App() {
               name="complaint"
               rows="10"
               placeholder="You can complain here"
-              onChange={e => { setComplaint(e.target.value) }} 
+              onChange={e => { handleChange(e) }} 
             ></textarea>
           </label>
 
           <div className="form__radio-group" onChange={(e) => {
-              setContactType(e.target.value)
+              handleChange(e)
             }}
           >
             <p>How do you want to be contacted? </p>
@@ -100,7 +112,7 @@ export default function App() {
           <label>
             I agree you take my data, and do whatever
             <input type="checkbox" name="consent" id="consent" onChange={(e) => {
-                setConsent(e.target.checked)
+                handleChange(e)
               }}
             />
           </label>
